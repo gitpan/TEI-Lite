@@ -178,4 +178,8 @@
 	</body>
 </xsl:template>
 
+<xsl:template match="xref">
+	<a href="{@target}"><xsl:value-of select="."/></a>
+</xsl:template>
+
 </xsl:stylesheet>

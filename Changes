@@ -1,6 +1,15 @@
 TEI::Lite Revision History
 ==========================
 
+0.3.5 Sun Jul 21 01:26:18 2002
+	- Modification to a couple of elements to bring them into being
+	  compliant with the specification.
+	- Added the DTD of the TEI P4 specification.
+	- Added the 'url' attribute to xref, xptr and figure tags to ease the 
+	  issues involved with the conversion of TEI <-> HTML per suggestion 
+	  of the P4 spec.
+	- Added a simple HTML2TEI conversion utility.
+
 0.3.0 Sun Jul 07 15:00:00 2002
 	- Package has been renamed from just TEILite to TEI::Lite on the
 	  recommendation of the Perl Modules List.

@@ -23,7 +23,7 @@ use warnings;
 
 use XML::LibXML;
 
-our $VERSION = "0.3.0";
+$TEI::Lite::VERSION = "0.3.5";
 
 our @ISA = qw( Exporter XML::LibXML::Element );
 
@@ -33,152 +33,154 @@ our @G_ATTR = qw( ana corresp id lang n next prev rend );
 ## Global hash that contains all of the TEI Lite elements and their
 ## associated attributes.
 our %ELEMENT = (
-	'tei_abbr'				=>	[ 'type', 'expan' ],
-	'tei_add'				=>	[ 'place' ],
-	'tei_address'			=>	[],
-	'tei_addrLine'			=>	[],
-	'tei_anchor'			=>	[],
-	'tei_argument'			=>	[],
-	'tei_author'			=>	[],
-	'tei_authority'			=>	[],
-	'tei_availability'		=>	[ 'status' ],
-	'tei_back'				=>	[],
-	'tei_bibl'				=>	[],
-	'tei_biblFull'			=>	[],
-	'tei_biblScope'			=>	[],
-	'tei_body'				=>	[],
-	'tei_byline'			=>	[],
-	'tei_catDesc'			=>	[],
-	'tei_category'			=>	[],
-	'tei_catRef'			=>	[ 'target' ],
-	'tei_cell'				=>	[ 'role', 'cols', 'rows' ],
-	'tei_change'			=>	[],
-	'tei_cit'				=>	[],
-	'tei_classCode'			=>	[ 'scheme' ],
-	'tei_classDecl'			=>	[],
-	'tei_closer'			=>	[],
-	'tei_code'				=>	[],
-	'tei_corr'				=>	[ 'sic', 'resp', 'cert' ],
-	'tei_creation'			=>	[],
-	'tei_date'				=>	[ 'calendar', 'value' ],
-	'tei_dateline'			=>	[],
-	'tei_del'				=>	[ 'type', 'status', 'hand' ],
-	'tei_distributer'		=>	[],
-	'tei_div'				=>	[ 'type' ],
-	'tei_div0'				=>	[ 'type' ],
-	'tei_div1'				=>	[ 'type' ],
-	'tei_div2'				=>	[ 'type' ],
-	'tei_div3'				=>	[ 'type' ],
-	'tei_div4'				=>	[ 'type' ],
-	'tei_div5'				=>	[ 'type' ],
-	'tei_div6'				=>	[ 'type' ],
-	'tei_div7'				=>	[ 'type' ],
-	'tei_divGen'			=>	[ 'type' ],
-	'tei_docAuthor'			=>	[],
-	'tei_docDate'			=>	[],
-	'tei_docEdition'		=>	[],
-	'tei_docImprint'		=>	[],
-	'tei_docTitle'			=>	[],
-	'tei_edition'			=>	[],
-	'tei_editionStmt'		=>	[],
-	'tei_editor'			=>	[ 'role' ],
-	'tei_editorialDecl'		=>	[],
-	'tei_eg'				=>	[],
-	'tei_emph'				=>	[],
-	'tei_encodingDesc'		=>	[],
-	'tei_epigraph'			=>	[],
-	'tei_extent'			=>	[],
-	'tei_figDesc'			=>	[],
-	'tei_figure'			=>	[ 'entity' ],
-	'tei_fileDesc'			=>	[],
-	'tei_foreign'			=>	[],
-	'tei_formula'			=>	[ 'notation' ],
-	'tei_front'				=>	[],
-	'tei_funder'			=>	[],
-	'tei_gap'				=>	[ 'desc', 'resp' ],
-	'tei_gi'				=>	[],
-	'tei_gloss'				=>	[ 'target' ],
-	'tei_group'				=>	[],
-	'tei_head'				=>	[],
-	'tei_hi'				=>	[],
-	'tei_ident'				=>	[],
-	'tei_idno'				=>	[ 'type' ],
-	'tei_imprint'			=>	[],
-	'tei_index'				=>	[ 'level1', 'level2', 'level3', 
-								  'level4', 'index' ],
-	'tei_interp'			=>	[ 'type', 'value', 'resp', 'inst' ],
-	'tei_interpGrp'			=>	[],
-	'tei_item'				=>	[],
-	'tei_keywords'			=>	[ 'scheme' ],
-	'tei_kw'				=>	[],
-	'tei_l'					=>	[ 'part' ],
-	'tei_label'				=>	[],
-	'tei_langUsage'			=>	[],
-	'tei_lb'				=>	[ 'ed' ],
-	'tei_lg'				=>	[],
-	'tei_list'				=>	[ 'type' ],
-	'tei_listBibl'			=>	[],
-	'tei_mentioned'			=>	[],
-	'tei_milestone'			=>	[ 'ed', 'unit' ],
-	'tei_name'				=>	[ 'type', 'key', 'reg' ],
-	'tei_note'				=>	[ 'type', 'resp', 'place', 
-								  'target', 'targetEnd', 'anchored' ],
-	'tei_noteStmt'			=>	[],
-	'tei_num'				=>	[ 'type', 'value' ],
-	'tei_opener'			=>	[],
-	'tei_orig'				=>	[ 'reg', 'resp' ],
-	'tei_p'					=>	[ 'type' ],
-	'tei_pb'				=>	[],
-	'tei_principal'			=>	[],
-	'tei_profileDesc'		=>	[],
-	'tei_projectDesc'		=>	[],
-	'tei_ptr'				=>	[ 'type', 'target', 'targType', 
-								  'crDate', 'resp' ],
-	'tei_publicationStmt'	=>	[],
-	'tei_publisher'			=>	[],
-	'tei_pubPlace'			=>	[],
-	'tei_q'					=>	[ 'type', 'who' ],
-	'tei_ref'				=>	[ 'type', 'target', 'targType', 
-								  'crDate', 'resp' ],
-	'tei_refsDecl'			=>	[],
-	'tei_reg'				=>	[ 'orig', 'resp' ],
-	'tei_rendition'			=>	[],
-	'tei_resp'				=>	[],
-	'tei_respStmt'			=>	[],
-	'tei_revisionDesc'		=>	[],
-	'tei_row'				=>	[ 'role' ],
-	'tei_rs'				=>	[ 'type', 'key', 'reg' ],
-	'tei_s'					=>	[ 'type' ],
-	'tei_salute'			=>	[],
-	'tei_samplingDecl'		=>	[],
-	'tei_seg'				=>	[ 'type' ],
-	'tei_series'			=>	[],
-	'tei_seriesStmt'		=>	[],
-	'tei_sic'				=>	[ 'corr', 'resp', 'cert' ],
-	'tei_signed'			=>	[],
-	'tei_soCalled'			=>	[],
-	'tei_sourceDesc'		=>	[],
-	'tei_sp'				=>	[ 'who' ],
-	'tei_speaker'			=>	[],
-	'tei_sponsor'			=>	[],
-	'tei_stage'				=>	[ 'type' ],
-	'tei_table'				=>	[ 'rows', 'cols' ],
-	'tei_tagsDecl'			=>	[],
-	'tei_tagUsage'			=>	[ 'gi', 'occurs' ],
-	'tei_taxonomy'			=>	[],
-	'tei_teiHeader'			=>	[],
-	'tei_term'				=>	[],
-	'tei_text'				=>	[],
-	'tei_textClass'			=>	[],
-	'tei_time'				=>	[ 'value' ],
-	'tei_title'				=>	[ 'type', 'level' ],
-	'tei_titlePage'			=>	[],
-	'tei_titlePart'			=>	[ 'title' ],
-	'tei_titleStmt'			=>	[],
-	'tei_trailer'			=>	[],
-	'tei_unclear'			=>	[ 'reason', 'resp' ],
-	'tei_xptr'				=>	[ 'doc', 'from', 'to' ],
-	'tei_xref'				=>	[ 'doc', 'from', 'to' ]
+	'abbr'				=>	[ 'type', 'expan' ],
+	'add'				=>	[ 'place' ],
+	'address'			=>	[],
+	'addrLine'			=>	[],
+	'anchor'			=>	[],
+	'argument'			=>	[],
+	'author'			=>	[],
+	'authority'			=>	[],
+	'availability'		=>	[ 'status' ],
+	'back'				=>	[],
+	'bibl'				=>	[],
+	'biblFull'			=>	[],
+	'biblScope'			=>	[],
+	'body'				=>	[],
+	'byline'			=>	[],
+	'catDesc'			=>	[],
+	'category'			=>	[],
+	'catRef'			=>	[ 'target' ],
+	'cell'				=>	[ 'role', 'cols', 'rows' ],
+	'change'			=>	[],
+	'cit'				=>	[],
+	'classCode'			=>	[ 'scheme' ],
+	'classDecl'			=>	[],
+	'closer'			=>	[],
+	'code'				=>	[],
+	'corr'				=>	[ 'sic', 'resp', 'cert' ],
+	'creation'			=>	[],
+	'date'				=>	[ 'calendar', 'value' ],
+	'dateline'			=>	[],
+	'del'				=>	[ 'type', 'status', 'hand' ],
+	'distributer'		=>	[],
+	'div'				=>	[ 'type' ],
+	'div0'				=>	[ 'type' ],
+	'div1'				=>	[ 'type' ],
+	'div2'				=>	[ 'type' ],
+	'div3'				=>	[ 'type' ],
+	'div4'				=>	[ 'type' ],
+	'div5'				=>	[ 'type' ],
+	'div6'				=>	[ 'type' ],
+	'div7'				=>	[ 'type' ],
+	'divGen'			=>	[ 'type' ],
+	'docAuthor'			=>	[],
+	'docDate'			=>	[],
+	'docEdition'		=>	[],
+	'docImprint'		=>	[],
+	'docTitle'			=>	[],
+	'edition'			=>	[],
+	'editionStmt'		=>	[],
+	'editor'			=>	[ 'role' ],
+	'editorialDecl'		=>	[],
+	'eg'				=>	[],
+	'emph'				=>	[],
+	'encodingDesc'		=>	[],
+	'epigraph'			=>	[],
+	'extent'			=>	[],
+	'figDesc'			=>	[],
+	'figure'			=>	[ 'entity', 'url' ],
+	'fileDesc'			=>	[],
+	'foreign'			=>	[],
+	'formula'			=>	[ 'notation' ],
+	'front'				=>	[],
+	'funder'			=>	[],
+	'gap'				=>	[ 'desc', 'resp' ],
+	'gi'				=>	[],
+	'gloss'				=>	[ 'target' ],
+	'group'				=>	[],
+	'head'				=>	[],
+	'hi'				=>	[],
+	'ident'				=>	[],
+	'idno'				=>	[ 'type' ],
+	'imprint'			=>	[],
+	'index'				=>	[ 'level1', 'level2', 'level3', 
+							  'level4', 'index' ],
+	'interp'			=>	[ 'type', 'value', 'resp', 'inst' ],
+	'interpGrp'			=>	[],
+	'item'				=>	[],
+	'keywords'			=>	[ 'scheme' ],
+	'kw'				=>	[],
+	'l'					=>	[ 'part' ],
+	'label'				=>	[],
+	'langUsage'			=>	[],
+	'lb'				=>	[ 'ed' ],
+	'lg'				=>	[],
+	'list'				=>	[ 'type' ],
+	'listBibl'			=>	[],
+	'mentioned'			=>	[],
+	'milestone'			=>	[ 'ed', 'unit' ],
+	'name'				=>	[ 'type', 'key', 'reg' ],
+	'note'				=>	[ 'type', 'resp', 'place', 
+							  'target', 'targetEnd', 'anchored' ],
+	'noteStmt'			=>	[],
+	'num'				=>	[ 'type', 'value' ],
+	'opener'			=>	[],
+	'orig'				=>	[ 'reg', 'resp' ],
+	'p'					=>	[ 'type' ],
+	'pb'				=>	[],
+	'principal'			=>	[],
+	'profileDesc'		=>	[],
+	'projectDesc'		=>	[],
+	'ptr'				=>	[ 'type', 'target', 'targType', 
+							  'crDate', 'resp' ],
+	'publicationStmt'	=>	[],
+	'publisher'			=>	[],
+	'pubPlace'			=>	[],
+	'q'					=>	[ 'type', 'who' ],
+	'ref'				=>	[ 'type', 'target', 'targType', 
+							  'crDate', 'resp' ],
+	'refsDecl'			=>	[],
+	'reg'				=>	[ 'orig', 'resp' ],
+	'rendition'			=>	[],
+	'resp'				=>	[],
+	'respStmt'			=>	[],
+	'revisionDesc'		=>	[],
+	'row'				=>	[ 'role' ],
+	'rs'				=>	[ 'type', 'key', 'reg' ],
+	's'					=>	[ 'type' ],
+	'salute'			=>	[],
+	'samplingDecl'		=>	[],
+	'seg'				=>	[ 'type' ],
+	'series'			=>	[],
+	'seriesStmt'		=>	[],
+	'sic'				=>	[ 'corr', 'resp', 'cert' ],
+	'signed'			=>	[],
+	'soCalled'			=>	[],
+	'sourceDesc'		=>	[],
+	'sp'				=>	[ 'who' ],
+	'speaker'			=>	[],
+	'sponsor'			=>	[],
+	'stage'				=>	[ 'type' ],
+	'table'				=>	[ 'rows', 'cols' ],
+	'tagsDecl'			=>	[],
+	'tagUsage'			=>	[ 'gi', 'occurs' ],
+	'taxonomy'			=>	[],
+	'teiHeader'			=>	[],
+	'term'				=>	[],
+	'text'				=>	[],
+	'textClass'			=>	[],
+	'time'				=>	[ 'value' ],
+	'title'				=>	[ 'type', 'level' ],
+	'titlePage'			=>	[],
+	'titlePart'			=>	[ 'title' ],
+	'titleStmt'			=>	[],
+	'trailer'			=>	[],
+	'unclear'			=>	[ 'reason', 'resp' ],
+	'xptr'				=>	[ 'target', 'type', 'targType', 'crDate',
+							  'resp', 'doc', 'from', 'to', 'url' ],
+	'xref'				=>	[ 'target', 'type', 'targType', 'crDate',
+							  'resp', 'doc', 'from', 'to', 'url' ]
 );
 
 no strict "refs";
@@ -188,14 +190,11 @@ no strict "refs";
 foreach my $element ( keys( %ELEMENT ) )
 {
 	## Add each of these elements to the default export list.
-	Exporter::export_tags( $element );
+	Exporter::export_tags( "tei_$element" );
 
-	*{ $element } = sub {
+	*{ "tei_$element" } = sub {
 		my $attributes = shift;
 		my @children = @_;
-			
-		## We want to peel the tei_ off the element part of the name.
-		$element =~ s/tei_//g;
 
 		## Need to set the type argument so the constructor knows
 		## what to create.
@@ -217,7 +216,7 @@ use strict "refs";
 ##----------------------------------------------##
 ##  new                                         ##
 ##----------------------------------------------##
-##  TEI::Lite::Element default constructor.  ##
+##  TEI::Lite::Element default constructor.     ##
 ##----------------------------------------------##
 sub new
 {
@@ -243,7 +242,7 @@ sub new
 ##----------------------------------------------##
 ##  TIEARRAY                                    ##
 ##----------------------------------------------##
-##  Constructor for tying TEI::Lite::Element ##
+##  Constructor for tying TEI::Lite::Element    ##
 ##  to an array variable.                       ##
 ##----------------------------------------------##
 sub TIEARRAY
@@ -258,8 +257,7 @@ sub TIEARRAY
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Element default               ##
-##  deconstructor.                              ##
+##  TEI::Lite::Element default deconstructor.   ##
 ##----------------------------------------------##
 sub DESTROY
 {
@@ -297,17 +295,20 @@ sub appendChildren
 	## data element they are ...
 	foreach( @children )
 	{
-		if( $_->isa( "XML::LibXML::Node" ) )
+		if( defined( $_ ) )
 		{
-			## If it is one of the items above, we should be able to
-			## safely append it to our DOM tree.
-			$self->appendChild( $_ );
-		}
-		else
-		{
-			## If it isn't one of the items above, assume that it is
-			## text data.
-			$self->appendText( $_ );
+			if( ( $_ ne "" ) && ( $_->isa( "XML::LibXML::Node" ) ) )
+			{
+				## If it is one of the items above, we should be able to
+				## safely append it to our DOM tree.
+				$self->appendChild( $_ );
+			}
+			else
+			{
+				## If it isn't one of the items above, assume that it is
+				## text data.
+				$self->appendText( $_ );
+			}
 		}
 	}
 
@@ -472,7 +473,7 @@ sub setAttributes
 
 	## Loop through the global attributes and the element specific
 	## attributes.
-	foreach( @G_ATTR, @{ $ELEMENT{ "tei_$element" } } )
+	foreach( @G_ATTR, @{ $ELEMENT{ $element } } )
 	{
 		## If it is defined in our attribute hash, then go ahead and 
 		## set it.
@@ -499,7 +500,6 @@ sub SHIFT
 	## send it back to the caller.
 	return( $self->removeChild( $self->firstChild ) );
 }
-
 
 ##----------------------------------------------##
 ##  STORE                                       ##

@@ -27,7 +27,7 @@ our %EXPORT_CLUSTER = ( 'TEI::Lite::Document'	=>	[],
 						'TEI::Lite::Element'	=>	[],
 						'TEI::Lite::Header'		=>	[] );
 
-our $VERSION = "0.3.0";
+$TEI::Lite::VERSION = "0.3.5";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##

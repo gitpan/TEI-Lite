@@ -27,7 +27,7 @@ use TEI::Lite::Element;
 
 our $AUTOLOAD;
 
-our $VERSION = "0.3.0";
+$TEI::Lite::VERSION = "0.3.5";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -36,14 +36,30 @@ our $VERSION = "0.3.0";
 ##----------------------------------------------##
 ##  new                                         ##
 ##----------------------------------------------##
-##  TEI::Lite::Document default constructor. ##
+##  TEI::Lite::Document default constructor. 	##
 ##----------------------------------------------##
 sub new
 {
 	## Pull in what type of an object we will be.
 	my $type = shift;
-	## We will use an anonymous hash as the base of the object.
-	my $self = _init_object_instance( @_ );
+	## Grab a copy of our parameters.
+	my %params = @_;
+	## Declare a variable that will later become our object instance.
+	my $self;
+	## Check to see if a filename is defined, if it is then attempt to load
+	## it ... otherwise just init a blank object.
+	if( defined( $params{ 'Filename' } ) )
+	{
+		$self = _load_teilite_file( %params );
+	}
+	elsif( defined( $params{ 'String' } ) )
+	{
+		$self = _load_teilite_string( %params );
+	}
+	else
+	{
+		$self = _init_object_instance( %params );
+	}
 	## Determine what exact class we will be blessing this instance into.
 	my $class = ref( $type ) || $type;
 	## Bless the class for it is good [tm].
@@ -55,8 +71,7 @@ sub new
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Document default              ##
-##  deconstructor.                              ##
+##  TEI::Lite::Document default deconstructor.  ##
 ##----------------------------------------------##
 sub DESTROY
 {
@@ -284,7 +299,7 @@ sub addHeader
 		$self->{ "header" } = $header;
 	
 		## Find the root element of a document.
-		my $root = shift( @{ $self->{ "DOM" }->find( "teiCorpus" ) } );
+		my $root = shift( @{ $self->{ "DOM" }->find( "teiCorpus.2" ) } );
 	
 		## We need to find the firstChild of this root element.
 		my $child = $root->firstChild;
@@ -350,7 +365,7 @@ sub addText
 ##  AUTOLOAD                                    ##
 ##----------------------------------------------##
 ##  We use AUTOLOAD to hide the magic behind    ##
-##  the TEI::Lite::Document.                 ##
+##  the TEI::Lite::Document.                    ##
 ##----------------------------------------------##
 sub AUTOLOAD
 {
@@ -718,7 +733,6 @@ sub _init_object_instance
 	## Pull in the parameters ...
 	my %params = @_;
 	
-	
 	## Create an anonymous hash to hold the basis of our object.
 	my $self = {};
 
@@ -760,7 +774,7 @@ sub _init_object_instance
 	
 	if( $params{ "Corpus" } > 0 )
 	{
-		$root_node = XML::LibXML::Element->new( "teiCorpus" );
+		$root_node = XML::LibXML::Element->new( "teiCorpus.2" );
 	}
 	else
 	{
@@ -814,6 +828,183 @@ sub _init_object_instance
 	$self->{ "active" } = 0;
 	
 	## Return what we have constructed.
+	return( $self );
+}
+
+##----------------------------------------------##
+##  _load_teilite_file                          ##
+##----------------------------------------------##
+##  Attempts to load a document that is in the  ##
+##  TEILite schema format.                      ##
+##----------------------------------------------##
+sub _load_teilite_file
+{
+	my %params = @_;
+	
+	## We need a variable to hold our instance variable.
+	my $self = {};
+	
+	## Create an instance of the LibXML parser to load the file.
+	my $parser = XML::LibXML->new();
+
+	## Attempt to load the file.
+	my $doc = $parser->parse_file( $params{ 'Filename' } );
+
+	## Grab the document element ...
+	my $root = $doc->getDocumentElement();
+
+	## Determine whaat type of document we are working with now.
+	if( $root->nodeName eq "teiCorpus.2" )
+	{
+		$self = _parse_teicorpus_document( $doc );
+	}
+	elsif( $root->nodeName eq "TEI.2" )
+	{
+		$self = _parse_tei_document( $doc );
+	}
+	else
+	{
+		croak( "The specified file is not a recognized TEILite document.\n" );
+	}
+	
+	return( $self );
+}
+
+##----------------------------------------------##
+##  _load_teilite_string                        ##
+##----------------------------------------------##
+##  Attempts to load a document that is in the  ##
+##  TEILite schema format.                      ##
+##----------------------------------------------##
+sub _load_teilite_string
+{
+	my %params = @_;
+	
+	## We need a variable to hold our instance variable.
+	my $self = {};
+	
+	## Create an instance of the LibXML parser to load the file.
+	my $parser = XML::LibXML->new();
+
+	## Attempt to load the file.
+	my $doc = $parser->parse_string( $params{ 'String' } );
+
+	## Grab the document element ...
+	my $root = $doc->getDocumentElement();
+
+	## Determine whaat type of document we are working with now.
+	if( $root->nodeName eq "teiCorpus.2" )
+	{
+		$self = _parse_teicorpus_document( $doc );
+	}
+	elsif( $root->nodeName eq "TEI.2" )
+	{
+		$self = _parse_tei_document( $doc );
+	}
+	else
+	{
+		croak( "The specified file is not a recognized TEILite document.\n" );
+	}
+
+	return( $self );
+}
+
+##----------------------------------------------##
+##  _parse_tei_document                         ##
+##----------------------------------------------##
+##  Function to break-apart a TEILite document  ##
+##  into the instance variable structure.       ##
+##----------------------------------------------##
+sub _parse_tei_document
+{
+	my $doc = shift;
+
+	## We use an anonymous hash as our internal structure.
+	my $self = {};
+	
+	## Grab the root element of the document.
+	my $root = $doc->getDocumentElement();
+
+	## We set the entire DOM tree into the DOM key.
+	$self->{ "DOM" } = $doc;
+	
+	## We are not a corpus document.
+	$self->{ "Corpus" } = 0;
+
+	## We now need to determine if we are a composite or unitary document.
+	my( @texts ) = $root->findnodes( "//text" );
+
+	## Loop through each of the texts loading them into our internal struct.
+	for( my $i = 0; $i < scalar( @texts ); $i++ )
+	{
+		## Set the Composite document counter.
+		$self->{ "Composite" } = $i;
+
+		## Set the base "text" element.
+		$self->{ "text" }->{ $i } = $texts[ $i ];
+
+		## Grab the children of the text element.
+		my( @children ) = $texts[ $i ]->childNodes;
+
+		foreach( @children )
+		{
+			if( $_->nodeName eq "front" )
+			{
+				$self->{ "front" }->{ $i } = $_;
+			}
+			elsif( $_->nodeName eq "body" )
+			{
+				$self->{ "body" }->{ $i } = $_;
+			}
+			elsif( $_->nodeName eq "back" )
+			{
+				$self->{ "back" }->{ $i } = $_;
+			}
+		}
+	}
+	
+	return( $self );
+}
+
+##----------------------------------------------##
+##  _parse_teicorpus_document                   ##
+##----------------------------------------------##
+##  Function to break-apart a TEILite document  ##
+##  into the instance variable structure.       ##
+##----------------------------------------------##
+sub _parse_teicorpus_document
+{
+	my $doc = shift;
+
+	## We use an anonymous hash as our internal structure.
+	my $self = {};
+	
+	## We set the entire DOM tree into the DOM key.
+	$self->{ "DOM" } = XML::LibXML::Document->new();
+	
+	my $root = XML::LibXML::Element->new( "teiCorpus.2" );
+	
+	$self->{ "DOM" }->setDocumentElement( $root );
+	
+	## We are not a composite document.
+	$self->{ "Composite" } = 0;
+
+	## We now need to determine if we are a composite or unitary document.
+	my( @texts ) = $doc->getDocumentElement()->findnodes( "//TEI.2" );
+
+	## Loop through each of the texts loading them into our internal struct.
+	for( my $i = 0; $i < scalar( @texts ); $i++ )
+	{
+		## Set the Composite document counter.
+		$self->{ "Corpus" } = $i;
+
+		## Set the base "text" element.
+		$self->{ "document" }->{ $i } = 
+			TEI::Lite::Document->new( String =>	$_->toString() );
+
+		$root->appendChild( $self->{ "document" }->{ $i }->documentElement );
+	}
+
 	return( $self );
 }
 
