@@ -1,0 +1,16 @@
+TEI::Lite Revision History
+==========================
+
+0.3.0 Sun Jul 07 15:00:00 2002
+	- Package has been renamed from just TEILite to TEI::Lite on the
+	  recommendation of the Perl Modules List.
+	- Reworked the testing framework a bit and added some more tests.
+	- Added some missing (?) elements into TEI::Lite::Element.
+
+0.2.5 Mon Jul 01 15:04:32 2002
+	- Added tests to Makefile.PL for XML::LibXML and Exporter::Cluster.
+	- Added some more documentation.
+
+0.2.0 Sun Jun 09 15:29:48 2002
+	- Completion of the first successful design approach of the module.
+

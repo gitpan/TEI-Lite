@@ -1,0 +1,12 @@
+Changes
+Lite.pm
+Lite/Document.pm
+Lite/Element.pm
+Lite/Header.pm
+Makefile.PL
+MANIFEST
+README
+TODO
+t/01_use.t
+t/02_inheritance.t
+xslt/xhtml.xsl

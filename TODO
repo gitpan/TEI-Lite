@@ -1,0 +1,11 @@
+XML::TEILite TODO List
+======================
+
+*) Add loading of pre-existing TEILite documents into TEILit::Documents.
+*) Add DTD declaration to TEI::Lite::Documents.
+*) Add in tree validation.
+*) Document the methods of TEI::Lite::Document.
+*) Document the methods of TEI::Lite::Header.
+*) Document the functions of TEI::Lite::Header.
+*) Write a sample HTML->TEILite conversion program.
+*) Add tests for the basic functionality.
