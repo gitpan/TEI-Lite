@@ -15,7 +15,7 @@ package TEI::Lite;
 ##  Libraries and Variables                                         ##
 ##==================================================================##
 
-require 5.6.0;
+require 5.006;
 require Exporter::Cluster;
 
 use strict;
@@ -27,7 +27,7 @@ our %EXPORT_CLUSTER = ( 'TEI::Lite::Document'	=>	[],
 						'TEI::Lite::Element'	=>	[],
 						'TEI::Lite::Header'		=>	[] );
 
-our $VERSION = "0.4.0";
+our $VERSION = "0.45";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -78,7 +78,7 @@ L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

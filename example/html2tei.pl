@@ -14,7 +14,7 @@
 ##  Libraries and Variables                                         ##
 ##==================================================================##
 
-require 5.6.0;
+require 5.006;
 
 use strict;
 use warnings;
@@ -22,7 +22,7 @@ use warnings;
 use TEI::Lite;
 use XML::LibXML;
 
-our $VERSION = "0.4.0";
+our $VERSION = "0.45";
 
 our %HTML2TEI =
 (

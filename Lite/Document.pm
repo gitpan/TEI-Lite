@@ -15,7 +15,7 @@ package TEI::Lite::Document;
 ##  Libraries and Variables                                         ##
 ##==================================================================##
 
-require 5.6.0;
+require 5.006;
 
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ use TEI::Lite::Element;
 
 our $AUTOLOAD;
 
-our $VERSION = "0.4.0";
+our $VERSION = "0.45";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -1023,6 +1023,13 @@ __END__
 
 TEI::Lite::Document - TEI::Lite::Document Object
 
+=head1 SYNOPSIS
+
+ my $document = TEI::Lite::Document->new( 'Corpus'    => 0,
+                                          'Composite' => 0 );
+
+ my $header = $document->addHeader();
+
 =head1 DESCRIPTION
 
 TEI::Lite::Document is a object oriented interface to the 
@@ -1086,7 +1093,7 @@ L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

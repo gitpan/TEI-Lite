@@ -1,6 +1,14 @@
 TEI::Lite Revision History
 ==========================
 
+0.45  Wed Mar 19 22:30:11 2003
+	- Changed version numbering to reflect the more standard perl notation.
+	- Fix for undesirable behavior of Exporter::export_tags.
+	- Various changes to make the modules more backward compatible with
+	  older versions of perl.
+	- Few more sanity checks added.
+	- Added more tests.
+
 0.4.0 Sun Jul 28 01:25:48 2002
 	- Added some more sanity checks to ensure that "we do the right thing [tm]"
 	  with adding data to the DOM tree.

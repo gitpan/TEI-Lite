@@ -15,7 +15,7 @@ package TEI::Lite::Header;
 ##  Libraries and Variables                                         ##
 ##==================================================================##
 
-require 5.6.0;
+require 5.006;
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ use TEI::Lite::Element;
 
 our @ISA = qw( XML::LibXML::Element );
 
-our $VERSION = "0.4.0";
+our $VERSION = "0.45";
 
 our %METHOD = (
 	'setAuthor'					=>	'//teiHeader/fileDesc/titleStmt/author',
@@ -81,7 +81,7 @@ use strict "refs";
 ##----------------------------------------------##
 ##  new                                         ##
 ##----------------------------------------------##
-##  TEI::Lite::Header default constructor.        ##
+##  TEI::Lite::Header default constructor.      ##
 ##----------------------------------------------##
 sub new
 {
@@ -100,7 +100,7 @@ sub new
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Header default deconstructor.      ##
+##  TEI::Lite::Header default deconstructor.    ##
 ##----------------------------------------------##
 sub DESTROY
 {
@@ -346,6 +346,13 @@ __END__
 
 TEI::Lite::Header
 
+=head1 SYNOPSIS
+
+ ## $document is a TEI::Lite::Document.
+ my $header = $document->addHeader();
+
+ $header->setTitle( "Title of Document" );
+
 =head1 DESCRIPTION
 
 TEI::Lite::Header is part of the TEILite library designed specifically to
@@ -396,7 +403,7 @@ L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

@@ -15,7 +15,7 @@ package TEI::Lite::Element;
 ##  Libraries and Variables                                         ##
 ##==================================================================##
 
-require 5.6.0;
+require 5.006;
 require Exporter;
 
 use strict;
@@ -23,7 +23,9 @@ use warnings;
 
 use XML::LibXML;
 
-our $VERSION = "0.4.0";
+our $VERSION = "0.45";
+
+our @EXPORT = qw();
 
 our @ISA = qw( Exporter XML::LibXML::Element );
 
@@ -190,8 +192,11 @@ no strict "refs";
 foreach my $element ( keys( %ELEMENT ) )
 {
 	## Add each of these elements to the default export list.
-	Exporter::export_tags( "tei_$element" );
-
+	## I can't use the below function because of the warnings it
+	## will generate.  What good is it?
+	#Exporter::export_tags( "tei_$element" );
+	push( @EXPORT, "tei_$element" );
+	
 	*{ "tei_$element" } = sub {
 		my $attributes = shift;
 		my @children = @_;
@@ -599,6 +604,19 @@ __END__
 
 TEI::Lite::Element
 
+=head1 SYNOPSIS
+
+ my $tei_p = tei_p();
+
+ tie( my @p, 'TEI::Lite::Element', $tei_p );
+
+ push( @p, tei_head( "Example Head Element" ),
+           "Regular body of the paragraph ..." );
+
+ untie( @p );
+
+ print $tei_p->toString( 2 ) . "\n";
+
 =head1 DESCRIPTION
 
 TEI::Lite::Element is wrapper for the document object model implemented
@@ -914,7 +932,7 @@ L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 
