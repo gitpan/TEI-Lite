@@ -23,7 +23,7 @@ use warnings;
 
 use XML::LibXML;
 
-$TEI::Lite::VERSION = "0.3.5";
+our $VERSION = "0.4.0";
 
 our @ISA = qw( Exporter XML::LibXML::Element );
 
@@ -295,9 +295,9 @@ sub appendChildren
 	## data element they are ...
 	foreach( @children )
 	{
-		if( defined( $_ ) )
+		if( ( defined( $_ ) ) && ( $_ ne "" ) )
 		{
-			if( ( $_ ne "" ) && ( $_->isa( "XML::LibXML::Node" ) ) )
+			if(	( ref ) && ( $_->isa( "XML::LibXML::Node" ) ) )
 			{
 				## If it is one of the items above, we should be able to
 				## safely append it to our DOM tree.
@@ -532,17 +532,20 @@ sub STORE
 		$self->appendChildren( $value );	
 	}
 	else
-	{	
+	{
 		## Determine what type of node we have and take the 
 		## appropriate function.
-		if( $value->isa( "XML::LibXML::Node" ) )
+		if( ( defined( $value ) ) && ( $value ne "" ) )
 		{
-			$childnodes[$index]->replaceNode( $value );
-		}
-		else
-		{
-			my $node = XML::LibXML::Text->new( $value );
-			$childnodes[$index]->replaceNode( $node );
+			if( ( ref( $value ) ) && ( $value->isa( "XML::LibXML::Node" ) ) )
+			{
+				$childnodes[$index]->replaceNode( $value );
+			}
+			else
+			{
+				my $node = XML::LibXML::Text->new( $value );
+				$childnodes[$index]->replaceNode( $node );
+			}
 		}
 	}
 

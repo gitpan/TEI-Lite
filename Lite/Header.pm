@@ -26,7 +26,7 @@ use TEI::Lite::Element;
 
 our @ISA = qw( XML::LibXML::Element );
 
-$TEI::Lite::VERSION = "0.3.5";
+our $VERSION = "0.4.0";
 
 our %METHOD = (
 	'setAuthor'					=>	'//teiHeader/fileDesc/titleStmt/author',
@@ -396,7 +396,7 @@ L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2000-2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

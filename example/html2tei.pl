@@ -22,7 +22,7 @@ use warnings;
 use TEI::Lite;
 use XML::LibXML;
 
-our $VERSION = "0.3.5";
+our $VERSION = "0.4.0";
 
 our %HTML2TEI =
 (
@@ -54,12 +54,12 @@ our %HTML2TEI =
 	'em'			=>	[ 'tei_emph' ],
 	'fieldset'		=>	[ 'null_element' ],
 	'font'			=>	[ 'null_element' ],
-	'h1'			=>	[ 'null_element' ],
-	'h2'			=>	[ 'null_element' ],
-	'h3'			=>	[ 'null_element' ],
-	'h4'			=>	[ 'null_element' ],
-	'h5'			=>	[ 'null_element' ],
-	'h6'			=>	[ 'null_element' ],
+	'h1'			=>	[ 'header_element' ],
+	'h2'			=>	[ 'header_element' ],
+	'h3'			=>	[ 'header_element' ],
+	'h4'			=>	[ 'header_element' ],
+	'h5'			=>	[ 'header_element' ],
+	'h6'			=>	[ 'header_element' ],
 	'hr'			=>	[ 'null_element' ],
 	'i'				=>	[ 'tei_hi', rend => 'italic' ],
 	'img'			=>	[ 'img_element' ],
@@ -168,6 +168,17 @@ sub a_element
 }
 
 ##----------------------------------------------##
+##  header_element                              ##
+##----------------------------------------------##
+##  Special case for header elements.           ##
+##----------------------------------------------##
+sub header_element
+{
+	my $node = shift;
+
+}
+
+##----------------------------------------------##
 ##  comment_element                             ##
 ##----------------------------------------------##
 ##  Special case for converting comments.       ##
@@ -176,7 +187,49 @@ sub comment_element
 {
 	my $node = shift;
 
-	return( $node );
+	my $element;
+	
+	my $name = $node->nodeName;
+
+	if( $name eq "h1" )
+	{
+		$element = tei_div1();
+	}
+	elsif( $name eq "h2" )
+	{
+		$element = tei_div2();
+	}
+	elsif( $name eq "h3" )
+	{
+		$element = tei_div3();
+	}
+	elsif( $name eq "h4" )
+	{
+		$element = tei_div4();
+	}
+	elsif( $name eq "h5" )
+	{
+		$element = tei_div5();
+	}
+	elsif( $name eq "h6" )
+	{
+		$element = tei_div6();
+	}
+	else
+	{
+		$element = tei_div();
+	}
+	
+	my $head = tei_head();
+
+	foreach( $node->childNodes )
+	{
+		$head->appendChild( $_ );
+	}
+
+	$element->appendChild( $head );
+	
+	return( $element );
 }
 
 ##----------------------------------------------##
@@ -334,7 +387,7 @@ L<TEI::Lite>, L<XML::LibXML>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2000-2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

@@ -1,6 +1,11 @@
 TEI::Lite Revision History
 ==========================
 
+0.4.0 Sun Jul 28 01:25:48 2002
+	- Added some more sanity checks to ensure that "we do the right thing [tm]"
+	  with adding data to the DOM tree.
+	- A few more documentation updates.
+
 0.3.5 Sun Jul 21 01:26:18 2002
 	- Modification to a couple of elements to bring them into being
 	  compliant with the specification.

@@ -23,4 +23,5 @@ README
 TODO
 t/01_use.t
 t/02_inheritance.t
+xslt/fo.xsl
 xslt/xhtml.xsl

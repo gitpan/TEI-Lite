@@ -1,47 +1,43 @@
 <!-- ==================================================================== -->
-<!-- TEILite XLST for HTML                                                -->
+<!-- = Name: TEILite XSLT conversion to HTML                            = -->
+<!-- =                                                                  = -->
+<!-- = Author: D. Hageman <dhageman@dracken.com>                        = -->
+<!-- =                                                                  = -->
+<!-- = Copyright: 2002 D. Hageman (Dracken Technologies)                = -->
+<!-- =                                                                  = -->
+<!-- = License: This program is free software; you can redistribute it  = -->
+<!-- =          and/or modify it under the same terms as Perl itself.   = -->
 <!-- ==================================================================== -->
-<xsl:stylesheet version="1.0" 
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
 
-<!-- Output Method -->
 <xsl:output method="html" 
 			indent="yes"
 			omit-xml-declaration="yes"
-            doctype-public="-//W3C//DTD HTML 4.0 Transitional//EN" />
+            doctype-public="-//W3C//DTD HTML 4.01//EN" />
 
-<!-- Document Root -->
 <xsl:template match="/">
 	<html>
 	<xsl:apply-templates/>
 	</html>
 </xsl:template>
 
-<!-- ******************************************************************** -->
-<!-- ****************  OUTPUT CONSTRUCTION FUNCTIONS  ******************* -->
-<!-- ******************************************************************** -->
-
 <xsl:template name="htmlTitle">
 	<title>
 	<xsl:choose>
-		<xsl:when test="ancestor-or-self::TEI.2/text/front//docTitle">
-			<xsl:value-of select="ancestor-or-self::TEI.2/text/front//docTitle"/>
+		<xsl:when test="//TEI.2/text/front//docTitle">
+			<xsl:value-of select="//TEI.2/text/front//docTitle"/>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:value-of select="ancestor-or-self::TEI.2/teiHeader/fileDesc/titleStmt/title"/>
+			<xsl:value-of select="//TEI.2/teiHeader/fileDesc/titleStmt/title"/>
 		</xsl:otherwise>
 	</xsl:choose>
 	</title>
 </xsl:template>
 
 <xsl:template name="htmlKeywords">
-	<meta name="keywords" content="{ancestor-or-self::TEI.2/teiHeader/profileDesc/textClass/keywords}"/>
+	<meta name="keywords" 
+		content="{//TEI.2/teiHeader/profileDesc/textClass/keywords}"/>
 </xsl:template>
-
-
-<!-- ******************************************************************** -->
-<!-- ***************************  ELEMENTS ****************************** -->
-<!-- ******************************************************************** -->
 
 <xsl:template match="address">
  <blockquote>
@@ -83,6 +79,10 @@
 
 <xsl:template match="epigraph">
 	<div class="epigraph"><xsl:apply-templates/></div>
+</xsl:template>
+
+<xsl:template match="figure">
+	<img src="{@url}" alt="{./figDesc}"/>
 </xsl:template>
 
 <xsl:template match="gap">
@@ -179,7 +179,7 @@
 </xsl:template>
 
 <xsl:template match="xref">
-	<a href="{@target}"><xsl:value-of select="."/></a>
+	<a href="{@url}"><xsl:apply-templates/></a>
 </xsl:template>
 
 </xsl:stylesheet>
