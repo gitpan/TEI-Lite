@@ -27,7 +27,7 @@ use TEI::Lite::Element;
 
 our $AUTOLOAD;
 
-our $VERSION = "0.45";
+our $VERSION = "0.50";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -1089,7 +1089,13 @@ D. Hageman E<lt>dhageman@dracken.comE<gt>
 
 =head1 SEE ALSO
 
-L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
+L<TEI::Lite>, 
+L<TEI::Lite::Element>, 
+L<TEI::Lite::Header>, 
+L<TEI::Lite::Utility>, 
+L<XML::LibXML>, 
+L<XML::LibXML::Node>,
+L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -1100,4 +1106,3 @@ This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
 =cut
-

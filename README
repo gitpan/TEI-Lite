@@ -26,6 +26,7 @@ DEPENDENCIES
 
  *) Carp
  *) Exporter
+ *) Date::Calc
  *) XML::LibXML
  *) Exporter::Cluster
 

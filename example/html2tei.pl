@@ -22,77 +22,7 @@ use warnings;
 use TEI::Lite;
 use XML::LibXML;
 
-our $VERSION = "0.45";
-
-our %HTML2TEI =
-(
-	'a'				=>	[ 'a_element' ],
-	'abbr'			=>	[ 'tei_abbr' ],
-	'acronym'		=>	[ 'tei_abbr' ],
-	'address'		=>	[ 'tei_address' ],
-	'applet'		=>	[ 'null_element' ],
-	'area'			=>	[ 'null_element' ],
-	'b'				=>	[ 'tei_hi', rend => 'bold' ],
-	'base'			=>	[ 'null_element' ],
-	'basefont'		=>	[ 'null_element' ],
-	'bdo'			=>	[ 'null_element' ],
-	'big'			=>	[ 'tei_hi', rend => 'bold' ],
-	'blockquote'	=>	[ 'tei_div' ],
-	'br'			=>	[ 'tei_lb' ],
-	'center'		=>	[ 'tei_hi', rend => 'center' ],
-	'cite'			=>	[ 'tei_cit' ],
-	'code'			=>	[ 'tei_code' ],
-	'col'			=>	[ 'null_element' ],
-	'colgroup'		=>	[ 'null_element' ],
-	'comment'		=>	[ 'comment_element' ],
-	'dd'			=>	[ 'null_element' ],
-	'del'			=>	[ 'null_element' ],
-	'dfn'			=>	[ 'null_element' ],
-	'div'			=>	[ 'null_element' ],
-	'dl'			=>	[ 'null_element' ],
-	'dt'			=>	[ 'null_element' ],
-	'em'			=>	[ 'tei_emph' ],
-	'fieldset'		=>	[ 'null_element' ],
-	'font'			=>	[ 'null_element' ],
-	'h1'			=>	[ 'header_element' ],
-	'h2'			=>	[ 'header_element' ],
-	'h3'			=>	[ 'header_element' ],
-	'h4'			=>	[ 'header_element' ],
-	'h5'			=>	[ 'header_element' ],
-	'h6'			=>	[ 'header_element' ],
-	'hr'			=>	[ 'null_element' ],
-	'i'				=>	[ 'tei_hi', rend => 'italic' ],
-	'img'			=>	[ 'img_element' ],
-	'ins'			=>	[ 'null_element' ],
-	'isindex'		=>	[ 'null_element' ],
-	'kbd'			=>	[ 'null_element' ],
-	'legend'		=>	[ 'null_element' ],
-	'li'			=>	[ 'tei_item' ],
-	'link'			=>	[ 'null_element' ],
-	'ol'			=>	[ 'tei_list', type => 'ordered' ],
-	'p'				=>	[ 'tei_p' ],
-	'pre'			=>	[ 'null_element' ],
-	'q'				=>	[ 'tei_hi', rend => 'quoted' ],
-	's'				=>	[ 'null_element' ],
-	'samp'			=>	[ 'tei_hi', rend => 'italic' ],
-	'small'			=>	[ 'tei_hi', rend => 'normal' ],
-	'span'			=>	[ 'tei_div' ],
-	'strike'		=>	[ 'tei_hi', rend => 'strike-through' ],
-	'strong'		=>	[ 'tei_hi', rend => 'bold' ],
-	'style'			=>	[ 'null_element' ],
-	'sub'			=>	[ 'null_element' ],
-	'table'			=>	[ 'tei_table' ],
-	'tbody'			=>	[ 'null_element' ],
-	'td'			=>	[ 'tei_cell' ],
-	'tfoot'			=>	[ 'null_element' ],
-	'th'			=>	[ 'null_element' ],
-	'thead'			=>	[ 'null_element' ],
-	'tr'			=>	[ 'tei_row' ],
-	'tt'			=>	[ 'tei_h', rend => 'monotype' ],
-	'u'				=>	[ 'tei_hi', rend => 'underline' ],
-	'ul'			=>	[ 'tei_list', type => 'bulleted' ],
-	'var'			=>	[ 'tei_hi', rend => 'italic' ]
-);
+our $VERSION = "0.50";
 
 ##==================================================================##
 ##  Main Execution                                                  ##
@@ -132,10 +62,13 @@ our %HTML2TEI =
 	## Set the title correctly
 	$tei_header->setTitle( $title );
 
-	foreach( $html_root->findnodes( '//body/*' ) )
-	{
-		$tei_body->appendChild( parse_html( $_ ) );
-	}
+	my( $body ) = $html_root->findnodes( '//body' );
+
+	my $body_string = tei_convert_html_fragment( 0, $body->toString() );
+
+	my $doc = $parser->parse_string( $body_string );
+	
+	$tei_body->appendChild( $doc->documentElement );
 	
 	## Print the docuument ...
 	print $tei_file->toString( 2 ) . "\n";
@@ -147,201 +80,6 @@ our %HTML2TEI =
 ##==================================================================##
 ##  Function(s)                                                     ##
 ##==================================================================##
-
-##----------------------------------------------##
-##  a_element                                   ##
-##----------------------------------------------##
-sub a_element
-{
-	my $node = shift;
-
-	my $href = $node->getAttribute( "href" );
-	
-	my $element = tei_xref( { url => $href } );
-
-	foreach( $node->childNodes )
-	{
-		$element->appendChild( parse_html( $_ ) );
-	}
-	
-	return( $element );
-}
-
-##----------------------------------------------##
-##  header_element                              ##
-##----------------------------------------------##
-##  Special case for header elements.           ##
-##----------------------------------------------##
-sub header_element
-{
-	my $node = shift;
-
-}
-
-##----------------------------------------------##
-##  comment_element                             ##
-##----------------------------------------------##
-##  Special case for converting comments.       ##
-##----------------------------------------------##
-sub comment_element
-{
-	my $node = shift;
-
-	my $element;
-	
-	my $name = $node->nodeName;
-
-	if( $name eq "h1" )
-	{
-		$element = tei_div1();
-	}
-	elsif( $name eq "h2" )
-	{
-		$element = tei_div2();
-	}
-	elsif( $name eq "h3" )
-	{
-		$element = tei_div3();
-	}
-	elsif( $name eq "h4" )
-	{
-		$element = tei_div4();
-	}
-	elsif( $name eq "h5" )
-	{
-		$element = tei_div5();
-	}
-	elsif( $name eq "h6" )
-	{
-		$element = tei_div6();
-	}
-	else
-	{
-		$element = tei_div();
-	}
-	
-	my $head = tei_head();
-
-	foreach( $node->childNodes )
-	{
-		$head->appendChild( $_ );
-	}
-
-	$element->appendChild( $head );
-	
-	return( $element );
-}
-
-##----------------------------------------------##
-##  null_element                                ##
-##----------------------------------------------##
-##  Catch all case for elements we don't know.  ##
-##  We basically just pass the data and remove  ##
-##  the tag.                                    ##
-##----------------------------------------------##
-sub null_element
-{
-	return( XML::LibXML::DocumentFragment->new() );
-}
-
-##----------------------------------------------##
-##  convert_element                             ##
-##----------------------------------------------##
-##  Most of the conversion magic happens in     ##
-##  in this function.                           ##
-##----------------------------------------------##
-sub convert_element
-{
-	my( $node, $element )  = @_;
-
-	foreach( $node->childNodes )
-	{
-		$element->appendChild( parse_html( $_ ) );
-	}
-
-	return( $element );
-}
-
-##----------------------------------------------##
-##  img_element                                 ##
-##----------------------------------------------##
-##  Special case for img elements.              ##
-##----------------------------------------------##
-sub img_element
-{
-	my $node = shift;
-
-	my $src = $node->getAttribute( "src" ) || "";
-	my $alt = $node->getAttribute( "alt" ) || "";
-
-	my $element = tei_figure( { url => $src } );
-
-	if( $alt ne "" )
-	{
-		my $figDesc = tei_Desc( {}, $alt );
-
-		$element->appendChild( $figDesc );
-	}
-
-	return( $element );
-}
-
-##----------------------------------------------##
-##  parse_html                                  ##
-##----------------------------------------------##
-##  Function dispatch function.  MHH.           ##
-##----------------------------------------------##
-sub parse_html
-{
-	my $node = shift;
-
-	## We need to declare a variable ...
-	my $element;
-	
-	## If it is a text node, then just let it pass on
-	## through ...
-	if( ref( $node ) eq ( "XML::LibXML::Text" ) )
-	{
-		return( $node );
-	}
-
-	## Determine what type of node we are really dealing with.
-	my $name = lc( $node->nodeName );
-	
-	no strict 'refs';
-	
-	my( @conversion ) = @{ $HTML2TEI{ $name } };
-	
-	my $function = shift( @conversion );
-	my %attributes = @conversion;
-	
-	if( !defined( $function ) )
-	{
-		warn "No translation available for $name element!\n";
-		return( XML::LibXML::Text->new( "" ) );
-	}
-	
-	## Special cases and then the generic case.
-	if( $name eq "img" )
-	{
-		$element = img_element( $node );
-	}
-	elsif( $name eq "a" )
-	{
-		$element = a_element( $node );
-	}
-	elsif( $name eq "comment" )
-	{
-		$element = comment_element( $node );
-	}
-	else
-	{
-		$element = convert_element( $node, &$function( \%attributes )  );
-	}
-	use strict 'refs';
-	
-	return( $element );
-}
 
 ##----------------------------------------------##
 ##  print_usage                                 ##
@@ -375,7 +113,7 @@ html2tei.pl <htmlfile>
 
 =head1 DESCRIPTION
 
-Utility to convert a HTML to a TEILite file.
+Utility to convert a HTML file to a TEILite file.
 
 =head1 AUTHOR
 
@@ -383,11 +121,11 @@ D. Hageman E<lt>dhageman@dracken.comE<gt>
 
 =head1 SEE ALSO
 
-L<TEI::Lite>, L<XML::LibXML>
+L<TEI::Lite>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

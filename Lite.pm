@@ -6,8 +6,9 @@ package TEI::Lite;
 ##                                                                  ##
 ##  Description:                                                    ##
 ##                                                                  ##
-##  Perl object designed to assist the user in the creation and     ##
-##  manipulation of TEILite documents.                              ##
+##  This is the wrapper perl module for a collection of modules     ##
+##  designed for the creation and manipulation of documents         ##
+##  following the TEILite specification.                            ##
 ##                                                                  ##
 ######################################################################
 
@@ -25,9 +26,10 @@ our @ISA = qw( Exporter::Cluster );
 
 our %EXPORT_CLUSTER = ( 'TEI::Lite::Document'	=>	[],
 						'TEI::Lite::Element'	=>	[],
-						'TEI::Lite::Header'		=>	[] );
+						'TEI::Lite::Header'		=>	[],
+						'TEI::Lite::Utility'	=>	[], );
 
-our $VERSION = "0.45";
+our $VERSION = "0.50";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -67,14 +69,21 @@ of XML documents based on the Text Encoding Initiative markup variant
 called TEILite.  TEILite is generally considered to contain enough tags 
 and markup flexibility to be able to handle most document types.
 
+The Text Encoding Initiative website can be found at http://www.tei-c.org/.
+
 =head1 AUTHOR
 
 D. Hageman E<lt>dhageman@dracken.comE<gt>
 
 =head1 SEE ALSO
 
-L<TEI::Lite::Document>, L<TEI::Lite::Header>, L<TEI::Lite::Element>
-L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
+L<TEI::Lite::Document>, 
+L<TEI::Lite::Element>,
+L<TEI::Lite::Header>, 
+L<TEI::Lite::Utility>, 
+L<XML::LibXML>, 
+L<XML::LibXML::Node>,
+L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -85,4 +94,3 @@ This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
 =cut
-

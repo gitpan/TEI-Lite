@@ -23,9 +23,9 @@ use warnings;
 
 use XML::LibXML;
 
-our $VERSION = "0.45";
+our $VERSION = "0.50";
 
-our @EXPORT = qw();
+our @EXPORT = qw( %TEI_ELEMENT );
 
 our @ISA = qw( Exporter XML::LibXML::Element );
 
@@ -34,7 +34,7 @@ our @G_ATTR = qw( ana corresp id lang n next prev rend );
 
 ## Global hash that contains all of the TEI Lite elements and their
 ## associated attributes.
-our %ELEMENT = (
+our %TEI_ELEMENT = (
 	'abbr'				=>	[ 'type', 'expan' ],
 	'add'				=>	[ 'place' ],
 	'address'			=>	[],
@@ -189,7 +189,7 @@ no strict "refs";
 
 ## Loop through each entry in our element hash and build a
 ## closure for that element.
-foreach my $element ( keys( %ELEMENT ) )
+foreach my $element ( keys( %TEI_ELEMENT ) )
 {
 	## Add each of these elements to the default export list.
 	## I can't use the below function because of the warnings it
@@ -478,7 +478,7 @@ sub setAttributes
 
 	## Loop through the global attributes and the element specific
 	## attributes.
-	foreach( @G_ATTR, @{ $ELEMENT{ $element } } )
+	foreach( @G_ATTR, @{ $TEI_ELEMENT{ $element } } )
 	{
 		## If it is defined in our attribute hash, then go ahead and 
 		## set it.
@@ -928,7 +928,13 @@ D. Hageman E<lt>dhageman@dracken.comE<gt>
 
 =head1 SEE ALSO
 
-L<XML::LibXML>, L<XML::LibXML::Element>, L<XML::LibXML::Node>
+L<TEI::Lite>, 
+L<TEI::Lite::Document>, 
+L<TEI::Lite::Header>, 
+L<TEI::Lite::Utility>, 
+L<XML::LibXML>, 
+L<XML::LibXML::Node>,
+L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,5 +1,12 @@
 TEI::Lite Revision History
 ==========================
+0.50  Thu Apr 17 12:30:42 2003
+	- Added Utility.pm with the start of some functionality that may be 
+	  useful for people working with TEILite documents.  I will add more
+	  to this module as I find the time and need.
+	- Updated the html2tei.pl example to use the new utility functionality.
+	- Added more documentation.
+	- Added more tests.
 
 0.45  Wed Mar 19 22:30:11 2003
 	- Changed version numbering to reflect the more standard perl notation.
