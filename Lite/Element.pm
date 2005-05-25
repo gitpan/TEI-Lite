@@ -1,15 +1,4 @@
 package TEI::Lite::Element;
-######################################################################
-##                                                                  ##
-##  Package:  Element.pm                                            ##
-##  Author:   D. Hageman <dhageman@dracken.com>                     ##
-##                                                                  ##
-##  Description:                                                    ##
-##                                                                  ##
-##  Perl object designed to assist the user in the creation and     ##
-##  manipulation of TEILite documents.                              ##
-##                                                                  ##
-######################################################################
 
 ##==================================================================##
 ##  Libraries and Variables                                         ##
@@ -22,8 +11,9 @@ use strict;
 use warnings;
 
 use XML::LibXML;
+use I18N::LangTags qw( is_language_tag );
 
-our $VERSION = "0.50";
+our $VERSION = "0.60";
 
 our @EXPORT = qw( %TEI_ELEMENT );
 
@@ -221,8 +211,6 @@ use strict "refs";
 ##----------------------------------------------##
 ##  new                                         ##
 ##----------------------------------------------##
-##  TEI::Lite::Element default constructor.     ##
-##----------------------------------------------##
 sub new
 {
 	## Pull in what type of an object we will be.
@@ -247,9 +235,6 @@ sub new
 ##----------------------------------------------##
 ##  TIEARRAY                                    ##
 ##----------------------------------------------##
-##  Constructor for tying TEI::Lite::Element    ##
-##  to an array variable.                       ##
-##----------------------------------------------##
 sub TIEARRAY
 {
 	my( $class, $self ) = @_;
@@ -262,8 +247,6 @@ sub TIEARRAY
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Element default deconstructor.   ##
-##----------------------------------------------##
 sub DESTROY
 {
 	## This is mainly a placeholder to keep things like mod_perl happy.
@@ -272,9 +255,6 @@ sub DESTROY
 
 ##----------------------------------------------##
 ##  UNTIE                                       ##
-##----------------------------------------------##
-##  Destructor called when untie is called in a ##
-##  tie situation.                              ##
 ##----------------------------------------------##
 sub UNTIE
 {
@@ -288,9 +268,6 @@ sub UNTIE
 
 ##----------------------------------------------##
 ##  appendChildren                              ##
-##----------------------------------------------##
-##  This is a convience function that wraps     ##
-##  multiple calls to the appendChild method.   ##
 ##----------------------------------------------##
 sub appendChildren
 {
@@ -323,9 +300,6 @@ sub appendChildren
 ##----------------------------------------------##
 ##  CLEAR                                       ##
 ##----------------------------------------------##
-##  Method triggered when all of the elements   ##
-##  are requested to be removed.                ##
-##----------------------------------------------##
 sub CLEAR
 {
 	my $self = shift;
@@ -345,9 +319,6 @@ sub CLEAR
 ##----------------------------------------------##
 ##  DELETE                                      ##
 ##----------------------------------------------##
-##  Method triggered when one of the elements   ##
-##  are requested to be removed.                ##
-##----------------------------------------------##
 sub DELETE
 {
 	my( $self, $index ) = @_;
@@ -363,10 +334,6 @@ sub DELETE
 
 ##----------------------------------------------##
 ##  EXISTS                                      ##
-##----------------------------------------------##
-##  Method triggered each time an individual    ##
-##  element is checked for existance in a tie   ##
-##  situation.                                  ##
 ##----------------------------------------------##
 sub EXISTS
 {
@@ -389,9 +356,6 @@ sub EXISTS
 ##----------------------------------------------##
 ##  EXTEND                                      ##
 ##----------------------------------------------##
-##  Informative call that the array will most   ##
-##  likely grow.                                ##
-##----------------------------------------------##
 sub EXTEND
 {
 	## We don't do anything with this in our implementataion.
@@ -400,9 +364,6 @@ sub EXTEND
 
 ##----------------------------------------------##
 ##  FETCH                                       ##
-##----------------------------------------------##
-##  Method triggered each time an individual    ##
-##  element is accessed in a tie situation.     ##
 ##----------------------------------------------##
 sub FETCH
 {
@@ -416,9 +377,6 @@ sub FETCH
 
 ##----------------------------------------------##
 ##  FETCHSIZE                                   ##
-##----------------------------------------------##
-##  Method triggered each time when the size    ##
-##  of the array is requested.                  ##
 ##----------------------------------------------##
 sub FETCHSIZE
 {
@@ -434,9 +392,6 @@ sub FETCHSIZE
 ##----------------------------------------------##
 ##  POP                                         ##
 ##----------------------------------------------##
-##  Method triggered each time when a pop       ##
-##  function is used on the tie'ed object.      ##
-##----------------------------------------------##
 sub POP
 {
 	my $self = shift;
@@ -447,10 +402,6 @@ sub POP
 
 ##----------------------------------------------##
 ##  PUSH                                        ##
-##----------------------------------------------##
-##  Method triggered each time when elements    ##
-##  are pushed onto the array in a tie          ##
-##  situation.                                  ##
 ##----------------------------------------------##
 sub PUSH
 {
@@ -465,9 +416,6 @@ sub PUSH
 
 ##----------------------------------------------##
 ##  setAttributes                               ##
-##----------------------------------------------##
-##  This is a convience function that wraps     ##
-##  multiple calls to the setAttribute method.  ##
 ##----------------------------------------------##
 sub setAttributes
 {
@@ -492,10 +440,23 @@ sub setAttributes
 }
 
 ##----------------------------------------------##
-##  SHIFT                                       ##
+##  setLang                                     ##
 ##----------------------------------------------##
-##  Method triggered each time when the array   ##
-##  is operated on by a shift function.         ##
+sub setLang
+{
+	my( $self, $lang ) = @_;
+
+	if( is_language_tag( $lang ) )
+	{
+		$self->setAttribute( "lang", $lang );
+		return( 1 );
+	}
+
+	return( 0 );
+}
+
+##----------------------------------------------##
+##  SHIFT                                       ##
 ##----------------------------------------------##
 sub SHIFT
 {
@@ -508,9 +469,6 @@ sub SHIFT
 
 ##----------------------------------------------##
 ##  STORE                                       ##
-##----------------------------------------------##
-##  Method triggered each time an individual    ##
-##  element is set in a tie situation.          ##
 ##----------------------------------------------##
 sub STORE
 {
@@ -559,9 +517,6 @@ sub STORE
 
 ##----------------------------------------------##
 ##  UNSHIFT                                     ##
-##----------------------------------------------##
-##  Method triggered each time when the size    ##
-##  of the array is requested.                  ##
 ##----------------------------------------------##
 sub UNSHIFT
 {
@@ -938,7 +893,7 @@ L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

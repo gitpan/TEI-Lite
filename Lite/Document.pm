@@ -1,15 +1,4 @@
 package TEI::Lite::Document;
-######################################################################
-##                                                                  ##
-##  Package:  Document.pm                                           ##
-##  Author:   D. Hageman <dhageman@dracken.com>                     ##
-##                                                                  ##
-##  Description:                                                    ##
-##                                                                  ##
-##  Perl object designed to assist the user in the creation and     ##
-##  manipulation of TEILite documents.                              ##
-##                                                                  ##
-######################################################################
 
 ##==================================================================##
 ##  Libraries and Variables                                         ##
@@ -22,12 +11,12 @@ use warnings;
 
 use Carp;
 use XML::LibXML;
-
 use TEI::Lite::Element;
+use I18N::LangTags qw( is_language_tag );
 
 our $AUTOLOAD;
 
-our $VERSION = "0.50";
+our $VERSION = "0.60";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -35,8 +24,6 @@ our $VERSION = "0.50";
 
 ##----------------------------------------------##
 ##  new                                         ##
-##----------------------------------------------##
-##  TEI::Lite::Document default constructor. 	##
 ##----------------------------------------------##
 sub new
 {
@@ -71,8 +58,6 @@ sub new
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Document default deconstructor.  ##
-##----------------------------------------------##
 sub DESTROY
 {
 	## This is mainly a placeholder to keep things like mod_perl happy.
@@ -85,9 +70,6 @@ sub DESTROY
 
 ##----------------------------------------------##
 ##  addBackMatter                               ##
-##----------------------------------------------##
-##  Adds a back matter component to a <text>    ##
-##  element that is currently "active".         ##
 ##----------------------------------------------##
 sub addBackMatter
 {
@@ -124,9 +106,6 @@ sub addBackMatter
 
 ##----------------------------------------------##
 ##  addCompositeBackMatter                      ##
-##----------------------------------------------##
-##  Adds a back matter component to a <text>    ##
-##  element that is currently "active".         ##
 ##----------------------------------------------##
 sub addCompositeBackMatter
 {
@@ -166,9 +145,6 @@ sub addCompositeBackMatter
 
 ##----------------------------------------------##
 ##  addCompositeFrontMatter                     ##
-##----------------------------------------------##
-##  Adds a front matter component to a <text>   ##
-##  element that is currently "active".         ##
 ##----------------------------------------------##
 sub addCompositeFrontMatter
 {
@@ -211,8 +187,6 @@ sub addCompositeFrontMatter
 ##----------------------------------------------##
 ##  addDocument                                 ##
 ##----------------------------------------------##
-##  Adds a document to a corpus document.       ##
-##----------------------------------------------##
 sub addDocument
 {
 	my $self = shift;
@@ -241,9 +215,6 @@ sub addDocument
 
 ##----------------------------------------------##
 ##  addFrontMatter                              ##
-##----------------------------------------------##
-##  Adds a front matter component to a <text>   ##
-##  element that is currently "active".         ##
 ##----------------------------------------------##
 sub addFrontMatter
 {
@@ -281,8 +252,6 @@ sub addFrontMatter
 
 ##----------------------------------------------##
 ##  addHeader                                   ##
-##----------------------------------------------##
-##  Creates a default header for a document.    ##
 ##----------------------------------------------##
 sub addHeader
 {
@@ -334,8 +303,6 @@ sub addHeader
 ##----------------------------------------------##
 ##  addText                                     ##
 ##----------------------------------------------##
-##  Adds another text to a composite document.  ##
-##----------------------------------------------##
 sub addText
 {
 	my $self = shift;
@@ -364,9 +331,6 @@ sub addText
 ##----------------------------------------------##
 ##  AUTOLOAD                                    ##
 ##----------------------------------------------##
-##  We use AUTOLOAD to hide the magic behind    ##
-##  the TEI::Lite::Document.                    ##
-##----------------------------------------------##
 sub AUTOLOAD
 {
 	my $self = shift;
@@ -380,8 +344,6 @@ sub AUTOLOAD
 
 ##----------------------------------------------##
 ##  getActiveDocument                           ##
-##----------------------------------------------##
-##  Returns the active document to the caller.  ##
 ##----------------------------------------------##
 sub getActiveDocument
 {
@@ -400,8 +362,6 @@ sub getActiveDocument
 ##----------------------------------------------##
 ##  getActiveText                               ##
 ##----------------------------------------------##
-##  Returns the active text to the caller.      ##
-##----------------------------------------------##
 sub getActiveText
 {
 	my $self = shift;
@@ -417,8 +377,6 @@ sub getActiveText
 
 ##----------------------------------------------##
 ##  getBackMatter                               ##
-##----------------------------------------------##
-##  Grabs the back of the active text.          ##
 ##----------------------------------------------##
 sub getBackMatter
 {
@@ -438,8 +396,6 @@ sub getBackMatter
 ##----------------------------------------------##
 ##  getBody                                     ##
 ##----------------------------------------------##
-##  Grabs the body of the active text.          ##
-##----------------------------------------------##
 sub getBody
 {
 	my $self = shift;
@@ -457,9 +413,6 @@ sub getBody
 
 ##----------------------------------------------##
 ##  getCompositeBackMatter                      ##
-##----------------------------------------------##
-##  Returns the back matter of a composite      ##
-##  document.                                   ##
 ##----------------------------------------------##
 sub getCompositeBackMatter
 {
@@ -479,9 +432,6 @@ sub getCompositeBackMatter
 ##----------------------------------------------##
 ##  getCompositeFrontMatter                     ##
 ##----------------------------------------------##
-##  Returns the front matter of a composite     ##
-##  document.                                   ##
-##----------------------------------------------##
 sub getCompositeFrontMatter
 {
 	my $self = shift;
@@ -500,8 +450,6 @@ sub getCompositeFrontMatter
 ##----------------------------------------------##
 ##  getDocument                                 ##
 ##----------------------------------------------##
-##  Returns the active document.                ##
-##----------------------------------------------##
 sub getDocument
 {
 	my $self = shift;
@@ -519,9 +467,6 @@ sub getDocument
 
 ##----------------------------------------------##
 ##  getDocuments                                ##
-##----------------------------------------------##
-##  Returns an array of TEI documents that are  ##
-##  contained within the corpus.                ##
 ##----------------------------------------------##
 sub getDocuments
 {
@@ -550,9 +495,17 @@ sub getDocuments
 }
 
 ##----------------------------------------------##
-##  getFrontMatter                              ##
+##  getDocumentLang                             ##
 ##----------------------------------------------##
-##  Grabs the back of the active text.          ##
+sub getDocumentLang
+{
+	my $self = shift;
+
+	return( $self->{ "DOM" }->documentElement->getAttribute( "lang" ) );
+}
+
+##----------------------------------------------##
+##  getFrontMatter                              ##
 ##----------------------------------------------##
 sub getFrontMatter
 {
@@ -572,8 +525,6 @@ sub getFrontMatter
 ##----------------------------------------------##
 ##  getHeader                                   ##
 ##----------------------------------------------##
-##  Returns the header node of a document.      ##
-##----------------------------------------------##
 sub getHeader
 {
 	my $self = shift;
@@ -583,8 +534,6 @@ sub getHeader
 
 ##----------------------------------------------##
 ##  getText                                     ##
-##----------------------------------------------##
-##  Returns the active text.                    ##
 ##----------------------------------------------##
 sub getText
 {
@@ -605,9 +554,6 @@ sub getText
 
 ##----------------------------------------------##
 ##  getTexts                                    ##
-##----------------------------------------------##
-##  Returns an array of the TEI text elements   ##
-##  that makes up a composite document.         ##
 ##----------------------------------------------##
 sub getTexts
 {
@@ -637,9 +583,6 @@ sub getTexts
 
 ##----------------------------------------------##
 ##  setActiveDocument                           ##
-##----------------------------------------------##
-##  Sets the active document in a TEI corpus    ##
-##  document.                                   ##
 ##----------------------------------------------##
 sub setActiveDocument
 {
@@ -679,10 +622,6 @@ sub setActiveDocument
 ##----------------------------------------------##
 ##  setActiveText                               ##
 ##----------------------------------------------##
-##  Gets/Sets the text that is considered the   ##
-##  the active docuument.  This function is     ##
-##  obviously ineffectial for a unitary text.   ##
-##----------------------------------------------##
 sub setActiveText
 {
 	my( $self, $active ) = @_;
@@ -716,6 +655,22 @@ sub setActiveText
 	$self->{ "active" } = $active;
 
 	return( $self->{ "active" } );
+}
+
+##----------------------------------------------##
+##  setDocumentLang                             ##
+##----------------------------------------------##
+sub setDocumentLang
+{
+	my( $self, $lang ) = @_;
+
+	if( is_language_tag( $lang ) )
+	{
+		$self->{ "DOM" }->documentElement->setAttribute( "lang", $lang );
+		return( 1 );
+	}
+
+	return( 0 );
 }
 
 ##==================================================================##
@@ -770,7 +725,7 @@ sub _init_object_instance
 	$self->{ "Composite" } = $params{ "Composite" };
 	
 	## Begin the construction of our internal DOM tree ...
-	$self->{ "DOM" } = XML::LibXML::Document->new( "1.0" );
+	$self->{ "DOM" } = XML::LibXML::Document->new( "1.0", "UTF8" );
 	
 	if( $params{ "Corpus" } > 0 )
 	{
@@ -1041,45 +996,89 @@ TEI::Lite::Document is a object oriented interface to the
 
 =item addBackMatter
 
+Adds a back matter component to a <text> element that is currently
+"active".
+
 =item addCompositeBackMatter
+
+Adds a back matter component to a composite document.
 
 =item addCompositeFrontMatter
 
+Adds a front matter component to a composite document.
+
 =item addDocument
+
+Adds another document to a corpus document.
 
 =item addFrontMatter
 
+Adds a front matter component to a <text> element that is currently
+"active".
+
 =item addHeader
+
+Creates a default header in a TEI document.
 
 =item addText
 
+Adds another <text> to a composite document.
+
 =item getActiveDocument
+
+Returns the active document to the caller.
 
 =item getActiveText
 
+Returns the active text to the caller.
+
 =item getBackMatter
+
+Returns the back matter of the active document to the caller.
 
 =item getBody
 
+Returns the <body> element of the active document to the caller.
+
 =item getCompositeBackMatter
+
+Returns the back matter of the composite document to the caller.
 
 =item getCompositeFrontMatter
 
+Returns the front matter of the composite document to the caller.
+
 =item getDocument
+
+Returns the active document to the caller.
 
 =item getDocuments
 
+Returns an array of TEI Lite documents contained within a corpus document.
+
 =item getFrontMatter
+
+Returns the front matter of the active document to the caller.
 
 =item getHeader
 
+Returns the header node of a document.
+
 =item getText
+
+Returns the active <text> node of a document.
 
 =item getTexts
 
+Returns an array of <text> nodes of a document.
+
 =item setActiveDocument
 
+Gets/Sets the active document in a TEI corpus document.
+
 =item setActiveText
+
+Gets/Sets the text node that is considered active in a document.
 
 =back
 
@@ -1099,7 +1098,7 @@ L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

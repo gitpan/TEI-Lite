@@ -28,7 +28,7 @@ our @ISA = qw( Exporter );
 
 our @EXPORT = qw( tei_convert_html_fragment );
 
-our $VERSION = "0.50";
+our $VERSION = "0.60";
 
 our %HTML2TEI = (
 	'a'				=>	[ 'link' ],
@@ -65,7 +65,7 @@ our %HTML2TEI = (
 	'h4'			=>	[ 'tei_head', {} ],
 	'h5'			=>	[ 'tei_head', {} ],
 	'h6'			=>	[ 'tei_head', {} ],
-	'hr'			=>	[ undef ],
+	'hr'			=>	[ 'tei_pb', { rend => 'hr' } ],
 	'i'				=>	[ 'tei_hi', { rend => 'italic' } ],
 	'img'			=>	[ 'figure' ],
 	'ins'			=>	[ undef ],
@@ -81,7 +81,7 @@ our %HTML2TEI = (
 	's'				=>	[ undef ],
 	'samp'			=>	[ 'tei_hi', { rend => 'italic' } ],
 	'small'			=>	[ 'tei_hi', { rend => 'normal' } ],
-	'span'			=>	[ 'tei_div' ],
+	'span'			=>	[ undef ],
 	'strike'		=>	[ 'tei_hi', { rend => 'strike-through' } ],
 	'strong'		=>	[ 'tei_hi', { rend => 'bold' } ],
 	'style'			=>	[ undef ],
@@ -106,15 +106,13 @@ our %HTML2TEI = (
 ##----------------------------------------------##
 ##  tei_convert_html_fragment                   ##
 ##----------------------------------------------##
-##  Utility function to convert HTML to TEI.    ##
-##----------------------------------------------##
-sub tei_convert_html_fragment ($@)
+sub tei_convert_html_fragment ($$@)
 {
-	my( $format, @html ) = @_;
+	my( $user_conversions, $format, @html ) = @_;
 	
 	## Define a variable to hold our HTML DOM tree.
-	my $html;
-
+	my $html = join( '', @html );
+	
 	## Create a new document to hold our data.
 	my $dom = XML::LibXML::Document->new( '1.0' );
 	
@@ -127,7 +125,7 @@ sub tei_convert_html_fragment ($@)
 	eval
 	{
 		## Attempt to parse the html data into a workable DOM tree.
-		$html = $parser->parse_html_string( join( '', @html ) );
+		$html = $parser->parse_html_string( $html );
 	};
 
 	if( $@ )
@@ -141,7 +139,8 @@ sub tei_convert_html_fragment ($@)
 	
 		foreach( $html->documentElement->findnodes( "//body/*" ) )
 		{
-			my( @elements ) = _convert_html_element_to_tei_element( $_ );
+			my( @elements ) = 
+				_convert_html_element_to_tei_element( $user_conversions, $_ );
 
 			foreach my $element ( @elements )
 			{
@@ -165,10 +164,12 @@ sub tei_convert_html_fragment ($@)
 ##----------------------------------------------##
 sub _convert_html_element_to_tei_element 
 {
-	my $node = shift;
+	my( $user_conversions, $node ) = @_;
 
-	## Define an element to hold our scratch data.
+	## Define an element to hold our scratch data and other elements.
 	my @result;
+	my $function,
+	my %attributes;
 	
 	## Simplest case is if the data is text - we can just return that to
 	## be appended.
@@ -182,8 +183,21 @@ sub _convert_html_element_to_tei_element
 
 	## Grab the conversion routine for this element from the converstion
 	## hash we have already defined.
-	my $function = @{ $HTML2TEI{ $name } }[0];
-	
+	if( ( defined( $user_conversions ) ) && 
+		( ref( $user_conversions ) eq "HASH" ) )
+	{
+		$function = @{ $user_conversions->{ $name } }[0];
+
+		if( !defined( $function ) )
+		{
+			$function = @{ $HTML2TEI{ $name } }[0];
+		}
+	}
+	else
+	{
+		$function = @{ $HTML2TEI{ $name } }[0];
+	}
+
 	## Check to see if the conversion function is defined our not.
 	if( ( !defined( $function ) ) && ( $node->hasChildNodes() ) )
 	{
@@ -193,7 +207,9 @@ sub _convert_html_element_to_tei_element
 	
 			foreach( @children )
 			{
-				push( @result, _convert_html_element_to_tei_element( $_ ) );
+				push( @result, 
+					  _convert_html_element_to_tei_element( 
+							$user_conversions, $_ ) );
 			}
 		}
 		else
@@ -204,10 +220,17 @@ sub _convert_html_element_to_tei_element
 
 	## This is our true main case ... almost all the converstion elements
 	## get done on this code branch.
-	if( $function =~ /tei/ )
+	if( ( defined( $function ) ) && ( $function =~ /tei/ ) )
 	{
-		## Grab the attributes out of our converstion hash.
-		my %attributes = %{ @{ $HTML2TEI{ $name } }[1] };
+		if( defined( @{ $user_conversions->{ $name } }[1] ) )
+		{
+			%attributes = %{ @{ $user_conversions->{ $name } }[1] };
+		}
+		elsif( defined( @{ $HTML2TEI{ $name } }[1] ) )
+		{
+			## Grab the attributes out of our converstion hash.
+			%attributes = %{ @{ $HTML2TEI{ $name } }[1] };
+		}
 
 		no strict 'refs';
 		$result[0] = &$function( \%attributes);
@@ -216,7 +239,8 @@ sub _convert_html_element_to_tei_element
 		## Loop through each of the child nodes ...
 		foreach( $node->childNodes() )
 		{
-			my( @children ) = _convert_html_element_to_tei_element( $_ );
+			my( @children ) = 
+				_convert_html_element_to_tei_element( $user_conversions, $_ );
 			
 			## Loop through each of those child nodes ...
 			foreach my $child ( @children )
@@ -227,7 +251,7 @@ sub _convert_html_element_to_tei_element
 	}
 
 	## We have a special case for comment nodes.
-	if( $function eq "comment" )
+	if( ( defined( $function ) ) && ( $function eq "comment" ) )
 	{
 		$result[0] = XML::LibXML::Comment->new();
 
@@ -238,7 +262,7 @@ sub _convert_html_element_to_tei_element
 	}
 
 	## We have a special case for linking nodes.
-	if( $function eq "link" )
+	if( ( defined( $function ) ) && ( $function eq "link" ) )
 	{
 		my $href = $node->getAttribute( "href" );
 
@@ -246,7 +270,8 @@ sub _convert_html_element_to_tei_element
 
 		foreach( $node->childNodes() )
 		{
-			my( @children ) = _convert_html_element_to_tei_element( $_ );
+			my( @children ) = 
+				_convert_html_element_to_tei_element( $user_conversions, $_ );
 			
 			## Loop through each of those child nodes ...
 			foreach my $child ( @children )
@@ -257,7 +282,7 @@ sub _convert_html_element_to_tei_element
 	}
 
 	## We have a special case for images as well ...
-	if( $function eq "figure" )
+	if( ( defined( $function ) ) && ( $function eq "figure" ) )
 	{
 		my $src = $node->getAttribute( "src" ) || "";
 		my $alt = $node->getAttribute( "alt" ) || "";
@@ -324,7 +349,7 @@ L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

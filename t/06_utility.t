@@ -22,7 +22,7 @@ my @html_fragment = ( qq|<p>Is this a <strong>well-balanced</strong> chunk |,
 					  qq|<img src="test" alt="alternate text"></p>| );
 
 
-my $converstion = tei_convert_html_fragment( 1, @html_fragment );
+my $converstion = tei_convert_html_fragment( {}, 1, @html_fragment );
 
 my $result = qq|<p>Is this a <hi rend="bold">well-balanced</hi> chunk of HTML?</p><p>Test the linking capabilities of HTML - <xref url="http://www.test.com">http://www.test.com</xref>.</p><p>We will now test an image tag.<figure url="test"><figDesc>alternate text</figDesc></figure></p>|;
 

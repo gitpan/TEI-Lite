@@ -113,7 +113,7 @@ html2tei.pl <htmlfile>
 
 =head1 DESCRIPTION
 
-Utility to convert a HTML file to a TEILite file.
+Utility to convert a HTML file to a TEI Lite file.
 
 =head1 AUTHOR
 
@@ -125,7 +125,7 @@ L<TEI::Lite>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

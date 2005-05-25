@@ -1,16 +1,4 @@
 package TEI::Lite;
-######################################################################
-##                                                                  ##
-##  Package:  Lite.pm                                               ##
-##  Author:   D. Hageman <dhageman@dracken.com>                     ##
-##                                                                  ##
-##  Description:                                                    ##
-##                                                                  ##
-##  This is the wrapper perl module for a collection of modules     ##
-##  designed for the creation and manipulation of documents         ##
-##  following the TEILite specification.                            ##
-##                                                                  ##
-######################################################################
 
 ##==================================================================##
 ##  Libraries and Variables                                         ##
@@ -29,7 +17,7 @@ our %EXPORT_CLUSTER = ( 'TEI::Lite::Document'	=>	[],
 						'TEI::Lite::Header'		=>	[],
 						'TEI::Lite::Utility'	=>	[], );
 
-our $VERSION = "0.50";
+our $VERSION = "0.60";
 
 ##==================================================================##
 ##  Constructor(s)/Deconstructor(s)                                 ##
@@ -66,7 +54,7 @@ TEI::Lite
 
 TEI::Lite is a DOM wrapper designed to ease the creation and modification
 of XML documents based on the Text Encoding Initiative markup variant
-called TEILite.  TEILite is generally considered to contain enough tags 
+called TEI Lite.  TEI Lite is generally considered to contain enough tags 
 and markup flexibility to be able to handle most document types.
 
 The Text Encoding Initiative website can be found at http://www.tei-c.org/.
@@ -87,7 +75,7 @@ L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

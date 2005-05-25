@@ -8,9 +8,9 @@ This group created a original SGML markup language they dubbed TEI which
 could theoretically markup any text document a person might create.  The
 original specification was quite large and to ease the use and help 
 facilitate the transition to using this new markup, they created a subset
-variation called TEILite.  TEILite markup though being a subset of the 
+variation called TEI Lite.  TEI Lite markup though being a subset of the 
 original specification is still powerful enough to markup "most" documents
-created by man.  The TEILite model is starting to see increasing popularity
+created by man.  The TEI Lite model is starting to see increasing popularity
 in libraries and electronic text archives.
 
 INSTALLATION
@@ -26,13 +26,14 @@ DEPENDENCIES
 
  *) Carp
  *) Exporter
- *) Date::Calc
  *) XML::LibXML
+ *) Date::Calc
+ *) I18N::LangTags
  *) Exporter::Cluster
 
 COPYRIGHT AND LICENSE
 
-Copyright (C) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (C) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 

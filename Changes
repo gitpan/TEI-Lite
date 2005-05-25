@@ -1,8 +1,20 @@
 TEI::Lite Revision History
 ==========================
+
+0.60  Wed May 25 00:53:16 2005
+	- Added more documentation to the individual perl modules.
+	- Cleaned up code comments.
+	- Added easy way to set the language on elements.
+	- Added easy way to set/get the language on a document.
+	- Documents are created as UTF8 by default now.
+	- Added some more tests.
+
+0.52  Mon May 19 18:25:42 2003
+	- Corrected the namespace for XForms.
+
 0.50  Thu Apr 17 12:30:42 2003
 	- Added Utility.pm with the start of some functionality that may be 
-	  useful for people working with TEILite documents.  I will add more
+	  useful for people working with TEI Lite documents.  I will add more
 	  to this module as I find the time and need.
 	- Updated the html2tei.pl example to use the new utility functionality.
 	- Added more documentation.
@@ -31,7 +43,7 @@ TEI::Lite Revision History
 	- Added a simple HTML2TEI conversion utility.
 
 0.3.0 Sun Jul 07 15:00:00 2002
-	- Package has been renamed from just TEILite to TEI::Lite on the
+	- Package has been renamed from just TEI Lite to TEI::Lite on the
 	  recommendation of the Perl Modules List.
 	- Reworked the testing framework a bit and added some more tests.
 	- Added some missing (?) elements into TEI::Lite::Element.

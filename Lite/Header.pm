@@ -1,15 +1,4 @@
 package TEI::Lite::Header;
-######################################################################
-##                                                                  ##
-##  Package:  Header.pm                                             ##
-##  Author:   D. Hageman <dhageman@dracken.com>                     ##
-##                                                                  ##
-##  Description:                                                    ##
-##                                                                  ##
-##  Perl object designed to assist the user in the creation and     ##
-##  manipulation of TEILite documents.                              ##
-##                                                                  ##
-######################################################################
 
 ##==================================================================##
 ##  Libraries and Variables                                         ##
@@ -26,7 +15,7 @@ use TEI::Lite::Element;
 
 our @ISA = qw( XML::LibXML::Element );
 
-our $VERSION = "0.50";
+our $VERSION = "0.60";
 
 our %METHOD = (
 	'setAuthor'					=>	'//teiHeader/fileDesc/titleStmt/author',
@@ -81,8 +70,6 @@ use strict "refs";
 ##----------------------------------------------##
 ##  new                                         ##
 ##----------------------------------------------##
-##  TEI::Lite::Header default constructor.      ##
-##----------------------------------------------##
 sub new
 {
 	## Pull in what type of an object we will be.
@@ -100,8 +87,6 @@ sub new
 ##----------------------------------------------##
 ##  DESTROY                                     ##
 ##----------------------------------------------##
-##  TEI::Lite::Header default deconstructor.    ##
-##----------------------------------------------##
 sub DESTROY
 {
 	## This is mainly a placeholder to keep things like mod_perl happy.
@@ -114,8 +99,6 @@ sub DESTROY
 
 ##----------------------------------------------##
 ##  appendRevisionEntry                         ##
-##----------------------------------------------##
-##  Adds to the document's internal changelog.  ##
 ##----------------------------------------------##
 sub appendRevisionEntry
 {
@@ -150,9 +133,6 @@ sub appendRevisionEntry
 ##----------------------------------------------##
 ##  setDatePublished                            ##
 ##----------------------------------------------##
-##  Sets the date on which the document was     ##
-##  published.                                  ##
-##----------------------------------------------##
 sub setDatePublished
 {
 	my( $self, $date ) = @_;
@@ -175,8 +155,6 @@ sub setDatePublished
 ##----------------------------------------------##
 ##  setDocumentAvailability                     ##
 ##----------------------------------------------##
-##  Provides distribution and license data.     ##
-##----------------------------------------------##
 sub setDocumentAvailability
 {
 	my( $self, $status, $copyright ) = @_;
@@ -198,9 +176,6 @@ sub setDocumentAvailability
 ##----------------------------------------------##
 ##  setIdentificationNumber                     ##
 ##----------------------------------------------##
-##  Sets a idno in the publishers area of the   ##
-##  header file.                                ##
-##----------------------------------------------##
 sub setIdentificationNumber
 {
 	my( $self, $type, $number ) = @_;
@@ -221,9 +196,6 @@ sub setIdentificationNumber
 
 ##----------------------------------------------##
 ##  setKeywords                                 ##
-##----------------------------------------------##
-##  Defines a set of keywords that describe     ##
-##  the document.                               ##
 ##----------------------------------------------##
 sub setKeywords
 {
@@ -409,7 +381,7 @@ L<XML::LibXML::Element>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2002-2003 D. Hageman (Dracken Technologies).
+Copyright (c) 2002-2005 D. Hageman (Dracken Technologies).
 All rights reserved.
 
 This program is free software; you can redistribute it and/or modify 
